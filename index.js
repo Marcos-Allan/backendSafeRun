@@ -121,7 +121,15 @@ const Person = mongoose.model('Person', {
         type: String,
         required: true
     },
+    cpf: {
+        type: String,
+        required: true
+    },
     password: {
+        type: String,
+        required: false
+    },
+    img: {
         type: String,
         required: false
     },
@@ -238,6 +246,7 @@ app.post("/register", async (req, res) => {
     const name = req.body.name
     const email = req.body.email
     const password = req.body.password
+    const cpf = req.body.cpf
 
     //VERIFICA SE OS CAMPOS FORAM PASSADOS
     if (!name){
@@ -253,6 +262,11 @@ app.post("/register", async (req, res) => {
     if (!password){
         //RETORNA MENSAGEM DE ERRO
         return res.send("informe uma senha")
+    }
+    //VERIFICA SE OS CAMPOS FORAM PASSADOS OU NÃO
+    if (!cpf){
+        //RETORNA MENSAGEM DE ERRO
+        return res.send("informe o seu CPF")
     }
 
     //PROCURA POR UM USUARIO COM O CAMPO ESPECIFICADO
@@ -270,6 +284,7 @@ app.post("/register", async (req, res) => {
             name: name,
             email: email,
             password: passwordHash,
+            cpf: cpf
         })
     
         //SALVA NO BANCO DE DADOS O USUÁRIO
@@ -371,7 +386,7 @@ app.get("/verify-code/:code", async (req, res) => {
 //ROTA DE ATUALIZAÇÃO DE DADOS DO USUÁRIO
 app.put("/update-user/:id", async (req, res) => {
     const id = req.params.id
-    const { password } = req.body
+    const { password, cpf, img } = req.body
 
     const passwordHash = password ? await hashPassword(password) : password
 
@@ -385,6 +400,8 @@ app.put("/update-user/:id", async (req, res) => {
 
     // VERIFICA SE O CAMPO FOI PASSADO
     if (password) person.password = passwordHash
+    if (cpf) person.cpf = cpf
+    if (img) person.img = img
 
     // SALVA O USUÁRIO NO BANCO DE DADOS
     await person.save()
