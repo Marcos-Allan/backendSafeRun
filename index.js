@@ -386,7 +386,7 @@ app.get("/verify-code/:code", async (req, res) => {
 //ROTA DE ATUALIZAÇÃO DE DADOS DO USUÁRIO
 app.put("/update-user/:id", async (req, res) => {
     const id = req.params.id
-    const { password, cpf, img } = req.body
+    const { password, cpf, img, name } = req.body
 
     const passwordHash = password ? await hashPassword(password) : password
 
@@ -402,6 +402,7 @@ app.put("/update-user/:id", async (req, res) => {
     if (password) person.password = passwordHash
     if (cpf) person.cpf = cpf
     if (img) person.img = img
+    if (name) person.name = name
 
     // SALVA O USUÁRIO NO BANCO DE DADOS
     await person.save()
